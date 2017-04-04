@@ -76,7 +76,7 @@ def bin_op(node, env):
     raise NotImplementedError
 
 
-def fundtion_def(node, env):
+def function_def(node, env):
     # need the function id (name), args, and body. Extend the environment.
     # you can leave the args wrapped in the ast class and the body and unpack them
     # when the function is called.
