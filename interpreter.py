@@ -46,7 +46,7 @@ def eval_node(node, env):
         # need the function id (name), args, and body. Extend the environment.
         # you can leave the args wrapped in the ast class and the body and unpack them
         # when the function is called.
-        return fundtion_def(node, env)
+        return function_def(node, env)
     elif node_type == 'Call':
         # get any values passed in to the function from the Call object.
         # get the fxn name and look up its parameters, if any, and body from the env.
