@@ -53,19 +53,36 @@ def eval_node(node, env):
 
 def assign(node, env):
     # extract the variable name, evaluate the right hand side, then extend the environment.
-    raise NotImplementedError
+    # looks like:
+    # {'targets': [<_ast.Name object at 0x021AA910>], 'value': <_ast.Num object at 0x021AA990>}
+    var_names = node.targets
+    value = eval_node(node.value, env)[0]
+    values = [value for i in range(0, len(var_names))]
+    new_env = env.extend(var_names, values)
+    return None, new_env
 
 
 def bin_op(node, env):
     # get the left and right operands (we use only single operands) and the operator.
     # evaluate the operands and apply the operator. return the number, env.
-    raise NotImplementedError
+    # node.value is a binop object that looks like:
+    # {'left': <_ast.Num object at 0x021AA9D0>,
+    # 'op': <_ast.Add object at 0x0218F030>,
+    # 'right': <_ast.Num object at 0x021AAA10>}
+    # Add, Sub, Mult, Div, Mod
+    ops = {
+        "Add": lambda x, y: x + y,
+        "Sub": lambda x, y: x - y,
+        "Mult": lambda x, y: x * y,
+        "Div": lambda x, y: x / y,
+        "Mod": lambda x, y: x % y
+    }
+    return ops[node_name(node.op)](eval_node(node.left, env), eval_node(node.right, env))
 
 
 def function_def(node, env):
     # need the function id (name), args, and body. Extend the environment.
-    # you can leave the args wrapped in the ast class and the body and unpack them
-    # when the function is called.
+    # you can leave the args wrapped in the ast class and the body and unpack them when the function is called.
     raise NotImplementedError
 
 
