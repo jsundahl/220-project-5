@@ -41,7 +41,11 @@ class GlobalEnv:
         Returns:
             GlobalEnv: A new instance of a GlobalEnv with "self" as the previous environment.
     """
-    def __init__(self, prev=None, vars=[], vals=[]):
+    def __init__(self, prev=None, vars=None, vals=None):
+        if vals is None:
+            vals = []
+        if vars is None:
+            vars = []
         self.variables = vars
         self.values = vals
         self.prev = prev
@@ -100,7 +104,11 @@ class LocalEnv:
             LocalEnv: A new instance of a LocalEnv with "self" as the previous environment, and
                       globalenv as the reference to the global environment.
     """
-    def __init__(self, prev, globalenv=None, vars=[], vals=[]):
+    def __init__(self, prev, globalenv=None, vars=None, vals=None):
+        if vals is None:
+            vals = []
+        if vars is None:
+            vars = []
         self.prev = prev
         if globalenv is None:
             self.globalenv = GlobalEnv.empty_env()
