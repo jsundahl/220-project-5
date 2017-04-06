@@ -58,7 +58,7 @@ class GlobalEnv:
         return lookup(self, symbol)
 
     def extend(self, vars, vals):
-        return self.__init__(self, vars, vals)
+        return GlobalEnv(self, vars, vals)
 
 
 class LocalEnv:
@@ -124,7 +124,7 @@ class LocalEnv:
             return lookup(self.globalenv, symbol)
 
     def extend(self, variables, values):
-        self.__init__(self, self.globalenv, variables, values)
+        return LocalEnv(self, self.globalenv, variables, values)
 
 
 def lookup(self, symbol):
