@@ -55,8 +55,7 @@ class GlobalEnv:
         return GlobalEnv()
 
     def lookup(self, symbol):
-        # todo
-        raise NotImplementedError
+        return lookup(self, symbol)
 
     def extend(self, vars, vals):
         return self.__init__(self, vars, vals)
@@ -118,15 +117,27 @@ class LocalEnv:
         self.values = vals
 
     def lookup(self, symbol):
-        # todo
-        raise NotImplementedError
+        self_lookup = lookup(self, symbol)
+        if self_lookup is not None:
+            return self_lookup
+        else:
+            return lookup(self.globalenv, symbol)
 
     def extend(self, variables, values):
         self.__init__(self, self.globalenv, variables, values)
 
 
+def lookup(self, symbol):
+    for i in range(0, len(self.variables)):
+        if symbol == self.variables[i]:
+            return self.values[i]
+    if self.prev is None:
+        return None
+    else:
+        return self.prev.lookup(symbol)
+
 if __name__ == '__main__':
-    g = GlobalEnv.empty()
+    g = GlobalEnv.empty_env()
     g = g.extend(['a', 'b'], [1, 2])
     print(g.lookup('a'))
     l = g.extend(['x', 'y'], [3, 4])
