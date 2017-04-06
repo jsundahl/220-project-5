@@ -96,10 +96,10 @@ def call(node, env):
 
 def retrn(node, env):
     # evaluate the node, return the value, env.
-    raise NotImplementedError
+    return eval_node(node.value, env), env
 
 
 def name(node, env):
     # Name(identifier id)- lookup the value binding in the env
     # return the value, env
-    raise NotImplementedError
+    return env.lookup(node.id), env
