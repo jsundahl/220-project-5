@@ -89,7 +89,7 @@ def bin_op(node, env):
         "Div": lambda x, y: x / y,
         "Mod": lambda x, y: x % y
     }
-    return ops[node_name(node.op)](eval_node(node.left, env), eval_node(node.right, env))
+    return ops[node_name(node.op)](eval_node(node.left, env)[0], eval_node(node.right, env)[0]), env
 
 
 def function_def(node, env):
@@ -98,7 +98,7 @@ def function_def(node, env):
     fn_id = node.name
     args = node.args
     body = node.body
-    return None, env.extend(fn_id, (args, body))
+    return None, env.extend([fn_id], [(args, body)])
 
 
 def call(node, env):
@@ -106,9 +106,15 @@ def call(node, env):
     # get the fxn name and look up its parameters, if any, and body from the env.
     # get lists for parameter names and values and extend a LocalEnv with those bindings.
     # evaluate the body in the local env, return the value, env.
-    arg_vals = [eval_node(arg, env) for arg in node.args]
-    function_name = node.func.id
-    fn_args, fn_body = env.lookup(function_name)
+    arg_vals = [eval_node(arg, env)[0] for arg in node.args]
+    packed_args, fn_body = None, None
+    if node_name(node.func) == "Call":
+        n_node, _ = call(node.func, env)
+        packed_args, fn_body = n_node
+    else:
+        function_name = node.func.id
+        packed_args, fn_body = env.lookup(function_name)
+    fn_args = list(map(lambda x: x.arg, packed_args.args))
     fn_env = LocalEnv(None, env, fn_args, arg_vals)
     final_val = eval_nodes(fn_body, fn_env)[0]
     return final_val, env
@@ -116,7 +122,7 @@ def call(node, env):
 
 def retrn(node, env):
     # evaluate the node, return the value, env.
-    return eval_node(node.value, env), env
+    return eval_node(node.value, env)[0], env
 
 
 def name(node, env):
