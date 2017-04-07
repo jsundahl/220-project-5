@@ -112,7 +112,7 @@ class LocalEnv:
         if globalenv is None:
             self.globalenv = GlobalEnv.empty_env()
         else:
-            self.globalenv = prev
+            self.globalenv = globalenv
         self.variables = vars
         self.values = vals
 
