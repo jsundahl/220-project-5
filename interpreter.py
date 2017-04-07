@@ -1,4 +1,5 @@
 from env import GlobalEnv, LocalEnv
+from functools import reduce
 
 genv = GlobalEnv.empty_env()
 result = 0
@@ -14,7 +15,19 @@ def eval_tree(tree):
     global genv
     global result
     # Here, get the list of children nodes. Iterate over that list, calling eval_node on each node.
+    genv = GlobalEnv.empty_env()
+    result = eval_nodes(tree.body, genv)
     return result
+
+
+def eval_nodes(node_list, env):
+    if len(node_list) == 0:
+        return None
+    elif len(node_list) == 1:
+        return eval_node(node_list[0], env)
+    else:
+        _, new_env = eval_node(node_list[0], env)
+        return eval_nodes(node_list[1:], new_env)
 
 
 def node_name(node):
@@ -83,7 +96,10 @@ def bin_op(node, env):
 def function_def(node, env):
     # need the function id (name), args, and body. Extend the environment.
     # you can leave the args wrapped in the ast class and the body and unpack them when the function is called.
-    raise NotImplementedError
+    fn_id = node.name
+    args = node.args
+    body = node.body
+    return None, env.extend(fn_id, (args, body))
 
 
 def call(node, env):
@@ -91,7 +107,12 @@ def call(node, env):
     # get the fxn name and look up its parameters, if any, and body from the env.
     # get lists for parameter names and values and extend a LocalEnv with those bindings.
     # evaluate the body in the local env, return the value, env.
-    raise NotImplementedError
+    arg_vals = [eval_node(arg, env) for arg in node.args]
+    function_name = node.func.id
+    fn_args, fn_body = env.lookup(function_name)
+    fn_env = LocalEnv(None, env, fn_args, arg_vals)
+    final_val = eval_nodes(fn_body, fn_env)[0]
+    return final_val, env
 
 
 def retrn(node, env):
