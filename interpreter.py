@@ -1,5 +1,4 @@
 from env import GlobalEnv, LocalEnv
-from functools import reduce
 
 genv = GlobalEnv.empty_env()
 result = 0
@@ -68,7 +67,7 @@ def assign(node, env):
     # extract the variable name, evaluate the right hand side, then extend the environment.
     # looks like:
     # {'targets': [<_ast.Name object at 0x021AA910>], 'value': <_ast.Num object at 0x021AA990>}
-    var_names = node.targets
+    var_names = list(map(lambda x: x.id, node.targets))
     value = eval_node(node.value, env)[0]
     values = [value for i in range(0, len(var_names))]
     new_env = env.extend(var_names, values)
