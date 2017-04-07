@@ -107,7 +107,6 @@ def call(node, env):
     # get lists for parameter names and values and extend a LocalEnv with those bindings.
     # evaluate the body in the local env, return the value, env.
     arg_vals = [eval_node(arg, env)[0] for arg in node.args]
-    packed_args, fn_body = None, None
     if node_name(node.func) == "Call":
         n_node, _ = call(node.func, env)
         packed_args, fn_body = n_node

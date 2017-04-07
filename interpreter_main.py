@@ -106,8 +106,8 @@ if __name__ == '__main__':
     import ast
     import interpreter
 
-    i = 7
-    for expression in [expressions[7]]:
+    i = 0
+    for expression in expressions:
         print("\n")
         print(' '*6 + "expr" + str(i + 1) + "\n" + '-'*20)
         print(expression)
